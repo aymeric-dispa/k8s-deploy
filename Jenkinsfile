@@ -9,11 +9,14 @@ pipeline {
             steps {
               script {
                 sh '''
+                  KUBECTL_PATH=$HOME/bin
+                  mkdir -p $KUBECTL_PATH
                   if ! command -v kubectl >/dev/null 2>&1; then
                     echo "Installing kubectl..."
                     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
                     chmod +x kubectl
-                    mv kubectl /usr/local/bin/
+                    mv kubectl $KUBECTL_PATH/kubectl
+                    export PATH=$KUBECTL_PATH:$PATH
                   else
                     echo "kubectl already installed"
                   fi
