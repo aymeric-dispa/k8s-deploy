@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    dockerimagename = "bravinwasike/react-app"
+    dockerimagename = "aydispa/react-app"
     dockerImage = ""
   }
   agent any
