@@ -5,26 +5,6 @@ pipeline {
   }
   agent any
   stages {
-          stage('Install kubectl') {
-            steps {
-              script {
-                sh '''
-                  KUBECTL_PATH=$HOME/bin
-                  mkdir -p $KUBECTL_PATH
-                  if ! command -v kubectl >/dev/null 2>&1; then
-                    echo "Installing kubectl..."
-                    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-                    chmod +x kubectl
-                    mv kubectl $KUBECTL_PATH/kubectl
-                    export PATH=$KUBECTL_PATH:$PATH
-                  else
-                    echo "kubectl already installed"
-                  fi
-                  kubectl version --client
-                '''
-              }
-            }
-          }
     stage('Checkout Source') {
       steps {
         git branch: 'main', url: 'https://github.com/aymeric-dispa/k8s-deploy.git'
@@ -50,10 +30,24 @@ pipeline {
       }
     }
     stage('Apply Kubernetes files') {
-        steps {
-          sh 'kubectl apply -f deployment.yaml'
-          sh 'kubectl apply -f service.yaml'
-          }
+      steps {
+        sh '''
+          KUBECTL_PATH=$HOME/bin
+          mkdir -p $KUBECTL_PATH
+          if ! command -v kubectl >/dev/null 2>&1; then
+            echo "Installing kubectl..."
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            chmod +x kubectl
+            mv kubectl $KUBECTL_PATH/kubectl
+          else
+            echo "kubectl already installed"
+          fi
+          export PATH=$KUBECTL_PATH:$PATH
+          kubectl version --client
+          kubectl apply -f deployment.yaml
+          kubectl apply -f service.yaml
+        '''
+      }
     }
   }
 }
