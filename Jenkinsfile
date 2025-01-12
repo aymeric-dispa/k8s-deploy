@@ -30,7 +30,8 @@ pipeline {
       }
     }
     stage('Apply Kubernetes files') {
-    withKubeConfig([credentialsId: 'jenkins-token', serverUrl: 'https://host.docker.internal:52119']) {
+      steps {
+        withKubeConfig([credentialsId: 'jenkins-token', serverUrl: 'https://host.docker.internal:52119']) {
         sh '''
           KUBECTL_PATH=$HOME/bin
           mkdir -p $KUBECTL_PATH
@@ -47,6 +48,7 @@ pipeline {
           kubectl apply -f deployment.yaml --validate=false
           kubectl apply -f service.yaml --validate=false
         '''
+      }
       }
     }
   }
