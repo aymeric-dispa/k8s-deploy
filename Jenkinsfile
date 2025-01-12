@@ -7,7 +7,7 @@ pipeline {
   stages {
     stage('Checkout Source') {
       steps {
-        git 'https://github.com/aymeric-dispa/k8s-deploy.git'
+        git branch: 'main', url: 'https://github.com/aymeric-dispa/k8s-deploy.git'
       }
     }
     stage('Build image') {
