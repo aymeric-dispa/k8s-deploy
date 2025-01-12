@@ -30,10 +30,8 @@ pipeline {
       }
     }
     stage('Apply Kubernetes files') {
-        withKubeConfig([]) {
           sh 'kubectl apply -f deployment.yaml'
           sh 'kubectl apply -f service.yaml'
-        }
     }
   }
 }
