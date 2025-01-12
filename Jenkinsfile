@@ -5,6 +5,23 @@ pipeline {
   }
   agent any
   stages {
+          stage('Install kubectl') {
+            steps {
+              script {
+                sh '''
+                  if ! command -v kubectl >/dev/null 2>&1; then
+                    echo "Installing kubectl..."
+                    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+                    chmod +x kubectl
+                    mv kubectl /usr/local/bin/
+                  else
+                    echo "kubectl already installed"
+                  fi
+                  kubectl version --client
+                '''
+              }
+            }
+          }
     stage('Checkout Source') {
       steps {
         git branch: 'main', url: 'https://github.com/aymeric-dispa/k8s-deploy.git'
