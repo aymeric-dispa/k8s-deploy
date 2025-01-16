@@ -23,6 +23,7 @@ pipeline {
         snykSecurity(
           snykInstallation: 'snyk@latest',
           snykTokenId: 'snyk-token',
+          snykArguments: '--json'
           // place other parameters here
         )
       }
