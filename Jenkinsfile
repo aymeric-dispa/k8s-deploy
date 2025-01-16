@@ -20,12 +20,11 @@ pipeline {
     stage('Test') {
       steps {
         echo 'Testing...'
-        snykSecurity(
-          snykInstallation: 'snyk@latest',
-          snykTokenId: 'snyk-token',
-          snykArguments: '--json'
-          // place other parameters here
-        )
+               script {
+                   withCredentials([string(credentialsId: 'snyk-token', variable: 'SNYK_TOKEN')]) {
+                       sh 'snyk test --token=$SNYK_TOKEN'
+                   }
+               }
       }
     }
     stage('Pushing Image') {
