@@ -17,6 +17,16 @@ pipeline {
         }
       }
     }
+        stage('Test') {
+          steps {
+            echo 'Testing...'
+            snykSecurity(
+              snykInstallation: 'snyk@latest',
+              snykTokenId: 'snyk-token',
+              // place other parameters here
+            )
+          }
+        }
     stage('Pushing Image') {
       environment {
           registryCredential = 'dockerhub-credentials'
