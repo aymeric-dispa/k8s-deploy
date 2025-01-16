@@ -11,8 +11,13 @@ pipeline {
       }
     }
     stage('Build image') {
-      steps{
+      steps {
         script {
+          sh '''
+          for var in $(env | grep ^DOCKER_ | awk -F= '{print $1}'); do
+              unset $var
+          done
+          '''
           dockerImage = docker.build dockerimagename
         }
       }
