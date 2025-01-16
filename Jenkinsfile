@@ -22,7 +22,7 @@ pipeline {
         echo 'Testing...'
                script {
                    withCredentials([string(credentialsId: 'snyk-token-text', variable: 'SNYK_TOKEN')]) {
-                       sh 'snyk test --token=$SNYK_TOKEN'
+                       sh 'snyk_arm64 test --token=$SNYK_TOKEN'
                    }
                }
       }
