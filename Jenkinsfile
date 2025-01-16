@@ -31,7 +31,7 @@ pipeline {
     }
     stage('Apply Kubernetes files') {
           steps {
-            withKubeConfig([credentialsId: 'jenkins-token', serverUrl: 'https://host.docker.internal:52119']) {
+            withKubeConfig([credentialsId: 'jenkins-token', serverUrl: 'https://host.docker.internal:50079']) {
                 sh '''
                   KUBECTL_PATH=$HOME/bin
                   mkdir -p $KUBECTL_PATH
