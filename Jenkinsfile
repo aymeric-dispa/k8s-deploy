@@ -21,7 +21,7 @@ pipeline {
       steps {
         echo 'Testing...'
                script {
-                   withCredentials([string(credentialsId: 'snyk-token', variable: 'SNYK_TOKEN')]) {
+                   withCredentials([string(credentialsId: 'snyk-token-text', variable: 'SNYK_TOKEN')]) {
                        sh 'snyk test --token=$SNYK_TOKEN'
                    }
                }
