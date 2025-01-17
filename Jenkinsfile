@@ -22,7 +22,7 @@ pipeline {
         echo 'Testing...'
                script {
                    withCredentials([string(credentialsId: 'snyk-token-text', variable: 'SNYK_TOKEN')]) {
-                       sh '/var/jenkins_home/tools/io.snyk.jenkins.tools.SnykInstallation/snyk_arm64 test --token=$SNYK_TOKEN'
+                       sh '/var/jenkins_home/tools/io.snyk.jenkins.tools.SnykInstallation/snyk_arm64/snyk-alpine test --token=$SNYK_TOKEN'
                    }
                }
       }
