@@ -28,15 +28,37 @@ pipeline {
       }
     }
     stage('Snyk container test') {
-      steps {
-        echo 'Checking container security'
-               script {
-                   withCredentials([string(credentialsId: 'snyk-token-text', variable: 'SNYK_TOKEN')]) {
-                       sh '/var/jenkins_home/tools/io.snyk.jenkins.tools.SnykInstallation/snyk_arm64/snyk-alpine test container --json-file-output=snyk-results.json --file=Dockerfile --debug --token=$SNYK_TOKEN'
-                       echo 'Snyk scan completed!'
-                   }
-               }
-      }
+        steps {
+            echo 'Checking container security...'
+            script {
+                if (!fileExists('Dockerfile')) {
+                    error 'Dockerfile not found in the workspace!'
+                }
+
+                timeout(time: 5, unit: 'MINUTES') {
+                    retry(3) {
+                        withCredentials([string(credentialsId: 'snyk-token-text', variable: 'SNYK_TOKEN')]) {
+                            sh '''
+                              /var/jenkins_home/tools/io.snyk.jenkins.tools.SnykInstallation/snyk_arm64/snyk-alpine test container \
+                              --json-file-output=snyk-results.json --file=Dockerfile --token=$SNYK_TOKEN --debug
+                            '''
+                        }
+                    }
+                }
+
+                if (fileExists('snyk-results.json')) {
+                    def snykResults = readJSON file: 'snyk-results.json'
+                    echo """
+                        Snyk Scan Summary:
+                        ------------------
+                        Total Dependencies: ${snykResults.numDependencies}
+                        Vulnerabilities Found: ${snykResults.vulnerabilities.size()}
+                    """
+                } else {
+                    error "Snyk did not generate the expected JSON file. Check logs for details."
+                }
+            }
+        }
     }
     stage('Pushing Image') {
       environment {
