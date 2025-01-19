@@ -10,6 +10,16 @@ pipeline {
         git branch: 'main', url: 'https://github.com/aymeric-dispa/k8s-deploy.git'
       }
     }
+    stage('Snyk code test') {
+      steps {
+        echo 'Checking code security'
+               script {
+                   withCredentials([string(credentialsId: 'snyk-token-text', variable: 'SNYK_TOKEN')]) {
+                       sh '/var/jenkins_home/tools/io.snyk.jenkins.tools.SnykInstallation/snyk_arm64/snyk-alpine test --token=$SNYK_TOKEN --severity-threshold=critical'
+                   }
+               }
+      }
+    }
     stage('Build image') {
       steps {
         script {
@@ -17,12 +27,12 @@ pipeline {
         }
       }
     }
-    stage('Test') {
+    stage('Snyk container test') {
       steps {
-        echo 'Testing...'
+        echo 'Checking container security'
                script {
                    withCredentials([string(credentialsId: 'snyk-token-text', variable: 'SNYK_TOKEN')]) {
-                       sh '/var/jenkins_home/tools/io.snyk.jenkins.tools.SnykInstallation/snyk_arm64/snyk-alpine test --token=$SNYK_TOKEN --severity-threshold=critical'
+                       sh '/var/jenkins_home/tools/io.snyk.jenkins.tools.SnykInstallation/snyk_arm64/snyk-alpine test container --print-deps --json --file=Dockerfile --token=$SNYK_TOKEN'
                    }
                }
       }
