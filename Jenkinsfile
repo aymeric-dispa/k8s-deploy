@@ -57,6 +57,7 @@ pipeline {
                 } else {
                     error "Snyk did not generate the expected JSON file. Check logs for details."
                 }
+                archiveArtifacts artifacts: 'snyk-results.json', allowEmptyArchive: false
             }
         }
     }
