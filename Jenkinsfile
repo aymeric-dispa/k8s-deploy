@@ -40,7 +40,7 @@ pipeline {
                         withCredentials([string(credentialsId: 'snyk-token-text', variable: 'SNYK_TOKEN')]) {
                             sh '''
                               /var/jenkins_home/tools/io.snyk.jenkins.tools.SnykInstallation/snyk_arm64/snyk-alpine container test \
-                              --json-file-output=snyk-results.json --file=Dockerfile --token=$SNYK_TOKEN --debug
+                              --json-file-output=snyk-results.json --file=Dockerfile --token=$SNYK_TOKEN
                             '''
                         }
                     }
