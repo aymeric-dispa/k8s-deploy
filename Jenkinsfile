@@ -32,7 +32,7 @@ pipeline {
         echo 'Checking container security'
                script {
                    withCredentials([string(credentialsId: 'snyk-token-text', variable: 'SNYK_TOKEN')]) {
-                       sh '/var/jenkins_home/tools/io.snyk.jenkins.tools.SnykInstallation/snyk_arm64/snyk-alpine test container --json-file-output=snyk-results.json --file=Dockerfile --token=$SNYK_TOKEN'
+                       sh '/var/jenkins_home/tools/io.snyk.jenkins.tools.SnykInstallation/snyk_arm64/snyk-alpine test container --json-file-output=snyk-results.json --file=Dockerfile --debug --token=$SNYK_TOKEN'
                        echo 'Snyk scan completed!'
                    }
                }
